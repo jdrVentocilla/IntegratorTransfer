@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Reactive.Linq;
-using System.Runtime;
 using System.Text;
 
 
@@ -63,7 +62,7 @@ namespace IntegratorTransfer.Application
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 var messageTyped =  JsonConvert.DeserializeObject<TransaccionFinanciera>(message);
-
+                _logger.LogInformation("Recibiendo .....Id:{id} NCuentaDestino:{NCuentaDestino} NCuentaOrigen:{NCuentaOrigen}", messageTyped.Id , messageTyped.NCuentaDestino , messageTyped.NCuentaOrigen);
                 _transferenciaRepository.Add(messageTyped);
                 _transferenciaDBContext.SaveChanges();
 
@@ -73,7 +72,7 @@ namespace IntegratorTransfer.Application
             };
 
 
-            _channel.BasicConsume(queue: "Transfer",
+            _channel.BasicConsume(queue: _settings.QueueName,
                                     autoAck: true,
                                     consumer: consumer);
 
