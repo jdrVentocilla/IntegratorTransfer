@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jdrventocilla-integratortransfer-deployment
+  labels:
+    app: jdrventocilla-integratortransfer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jdrventocilla-integratortransfer
+  template:
+    metadata:
+      name: jdrventocilla-integratortransfer-pod-template
+      labels:
+        app: jdrventocilla-integratortransfer
+    spec:
+      containers:
+        - name: app
+          image: docker.io/jdrventocilla/integratortransfer:latest
+          env:
+            - name: TransferQueueSetting__HostName
+              value: "rabbitmq-service.default.svc.cluster.local"
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"

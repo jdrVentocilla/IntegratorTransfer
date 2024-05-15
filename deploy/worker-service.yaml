@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jdrventocilla-worker-deployment
+  labels:
+    app: jdrventocilla-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jdrventocilla-worker
+  template:
+    metadata:
+      name: jdrventocilla-worker-pod-template
+      labels:
+        app: jdrventocilla-worker
+    spec:
+      containers:
+        - name: app
+          image: docker.io/jdrventocilla/messagerworker:latest
+          env:
+            - name: TransferQueueSetting__HostName
+              value: "rabbitmq-service.default.svc.cluster.local"
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
